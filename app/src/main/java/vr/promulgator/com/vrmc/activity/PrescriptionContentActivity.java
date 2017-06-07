@@ -156,12 +156,14 @@ public class PrescriptionContentActivity extends BaseActivity implements QueryPr
         int i = checkNetWork();
         if (i == 0) {
             ToastCommom.createInstance().ToastShow(PrescriptionContentActivity.this, "请设置网络环境");
-        } else {
+        } else if(id.getContent_type() ==1){
             this.id = id;
             Map<String, String> priArgs = new HashMap<>();
             priArgs.put("vrRoomId", loginInfo.getData().getVrRoomId());
             priArgs.put("token", token);
             ulp.getUserList(priArgs);
+        }else{
+            ToastCommom.createInstance().ToastShow(PrescriptionContentActivity.this, "暂时不支持视频以外类型文件");
         }
     }
 
