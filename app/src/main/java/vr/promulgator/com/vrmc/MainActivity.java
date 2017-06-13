@@ -262,7 +262,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 break;
             case R.id.nav_kefu:
                 new SweetAlertDialog(this,SweetAlertDialog.WARNING_TYPE)
-                        .setTitleText("联系客服").setContentText("账号问题请联系客服处理!"+"\n"+"客服电话:4008-888-888")
+                        .setTitleText("联系客服").setContentText("账号问题请联系客服处理!"+"\n"+"客服电话:4001667866")
                         .setCancelText("取消")
                         .setConfirmText("确定")
                         .setCancelClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -275,7 +275,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             @Override
                             public void onClick(SweetAlertDialog sweetAlertDialog) {
                                 sweetAlertDialog.dismiss();
-                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:4008888888"));
+                                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:4001667866"));
                                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
                             }

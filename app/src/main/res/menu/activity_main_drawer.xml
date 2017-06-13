@@ -24,6 +24,6 @@
             
             android:id="@+id/nav_kefu"
             android:icon="@mipmap/phone"
-            android:title="联系客服 : 400-8888-888"/>
+            android:title="联系客服 : 400-166-7866"/>
     </group>
 </menu>
