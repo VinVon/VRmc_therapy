@@ -2,6 +2,7 @@ package vr.promulgator.com.vrmc.imp;
 
 
 import vr.promulgator.com.vrmc.bean.PatientInfo;
+import vr.promulgator.com.vrmc.bean.PatientNophoneInfo;
 
 /**
  * Created by raytine on 2017/2/11.
@@ -9,6 +10,7 @@ import vr.promulgator.com.vrmc.bean.PatientInfo;
 
 public interface QueryPayient extends BaseImp{
     void updateView(PatientInfo user);
+    void updateView(PatientNophoneInfo user);
 
     void showProgressDialog();
 

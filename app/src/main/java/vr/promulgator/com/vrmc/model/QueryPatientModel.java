@@ -12,6 +12,7 @@ import okhttp3.Call;
 import okhttp3.MediaType;
 import okhttp3.Response;
 
+import vr.promulgator.com.vrmc.bean.PatientNophoneInfo;
 import vr.promulgator.com.vrmc.utils.JsonUtils;
 
 /**
@@ -53,10 +54,51 @@ public class QueryPatientModel {
                     }
                 });
     }
+    public void getPatientNoPhone(Map<String,String> map,final OnLoginListeners onLoginListener){
+        OkHttpUtils.postString()
+                .url(UrlHttp.PATH_PATIENT_NOPHONE)
+                .content(new Gson().toJson(map))
+                .mediaType(MediaType.parse("application/json; charset=utf-8"))
+                .build()
+                .execute(new Callback() {
+                    @Override
+                    public Object parseNetworkResponse(Response response, int id) throws Exception {
+//                        PatientNophoneInfo info = JsonUtils.patientnophonePares(response.body().string());
+                        Gson g = new Gson();
+                        PatientNophoneInfo info = g.fromJson(response.body().string(),PatientNophoneInfo.class);
+                        if (info.getCode() == 0) {//查询患者成功。根据患者的useid(即patientid)来查询患者的处方列表
+                            onLoginListener.loginSuccess(info);
+                        } else if(info.getCode() == 95 ||info.getCode() == 96 ||info.getCode() ==97||info.getCode() ==98){
+                            onLoginListener.tokenChange();
+                        }
+                        else
+                        {
+                            onLoginListener.loginFailed(info);
+                        }
+                        return null;
+                    }
+
+                    @Override
+                    public void onError(Call call, Exception e, int id) {
+
+                    }
+
+                    @Override
+                    public void onResponse(Object response, int id) {
+
+                    }
+                });
+    }
     public interface OnLoginListener
     {
         void loginSuccess(PatientInfo user);
         void tokenChange();
         void loginFailed(PatientInfo user);
+    }
+    public interface OnLoginListeners
+    {
+        void loginSuccess(PatientNophoneInfo user);
+        void tokenChange();
+        void loginFailed(PatientNophoneInfo user);
     }
 }

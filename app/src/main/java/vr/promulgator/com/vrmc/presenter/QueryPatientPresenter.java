@@ -6,6 +6,7 @@ import vr.promulgator.com.vrmc.bean.PatientInfo;
 
 import java.util.Map;
 
+import vr.promulgator.com.vrmc.bean.PatientNophoneInfo;
 import vr.promulgator.com.vrmc.imp.QueryPayient;
 import vr.promulgator.com.vrmc.model.QueryPatientModel;
 
@@ -52,6 +53,50 @@ public class QueryPatientPresenter {
 
             @Override
             public void loginFailed(final PatientInfo user) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        queryPayient.showError(user.getMessage());
+                        queryPayient.change();
+                        queryPayient.hideProgressDialog();
+                    }
+                });
+
+            }
+        });
+
+    }
+
+    /**
+     * 获取病案号患者
+     */
+    public void  getPatientNoPhone(){
+        queryPayient.showProgressDialog();
+        queryPatientModel.getPatientNoPhone(map, new QueryPatientModel.OnLoginListeners() {
+            @Override
+            public void loginSuccess(final PatientNophoneInfo user) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        queryPayient.updateView(user);
+                        queryPayient.hideProgressDialog();
+                    }
+                });
+            }
+
+            @Override
+            public void tokenChange() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        queryPayient.tokenchange();
+                        queryPayient.hideProgressDialog();
+                    }
+                });
+            }
+
+            @Override
+            public void loginFailed(final PatientNophoneInfo user) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {

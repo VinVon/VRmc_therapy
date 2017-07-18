@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -20,10 +21,16 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import vr.promulgator.com.vrmc.bean.IConstant;
+import vr.promulgator.com.vrmc.bean.NophonePrescriptionContent;
+import vr.promulgator.com.vrmc.bean.PatientNophoneInfo;
+import vr.promulgator.com.vrmc.fragment.ContentFragment;
+import vr.promulgator.com.vrmc.fragment.PrescriptionFragment;
 import vr.promulgator.com.vrmc.presenter.LoginPresenter;
 import vr.promulgator.com.vrmc.utils.ToastCommom;
 
@@ -54,7 +61,7 @@ import vr.promulgator.com.vrmc.utils.SpUtils;
  * Created by raytine on 2017/4/25.
  */
 
-public class PaintActivity extends BaseActivity implements View.OnClickListener, QueryPayient, QueryPrescription {
+public class PaintActivity extends BaseActivity implements View.OnClickListener, QueryPayient{
     public static final String EXTRA_KEY_TYPE = "extra_key_type";
     public static final String EXTRA_KEY_KEYWORD = "extra_key_keyword";
     public static final String KEY_SEARCH_HISTORY_KEYWORD = "key_search_history_keyword";
@@ -67,10 +74,6 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
     ImageView clearKeywordIv;
     @BindView(R.id.tab_bar_cancel_tv)
     TextView tabBarCancelTv;
-    @BindView(R.id.listview)
-    ListView listview;
-    @BindView(R.id.xinjing_name)
-    TextView xinjingName;
     @BindView(R.id.xinjing_phone)
     TextView xinjingPhone;
     @BindView(R.id.search_history_ll)
@@ -78,20 +81,37 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
     @BindView(R.id.img_back)
     ImageView imgBack;
     @BindView(R.id.action_three)
-    LinearLayout actionThree;
+    RelativeLayout actionThree;
+    @BindView(R.id.selector_content)
+    RadioGroup selectorContent;
+    @BindView(R.id.fragment_container)
+    FrameLayout fragmentContainer;
+    @BindView(R.id.xinjing_name)
+    TextView xinjingName;
+    @BindView(R.id.xinjing_sex)
+    TextView xinjingSex;
+    @BindView(R.id.xinjing_medical)
+    TextView xinjingMedical;
     private SharedPreferences mPref;
     private SharedPreferences.Editor mEditor;
     private MyArrayAdapter mArrAdapter;
     private LocalInfo users;
     private QueryPatientPresenter queryPatientPresenter;
-    private QueryPrescriptionPresenter queryPrescriptionPresenter;
+    //    private QueryPrescriptionPresenter queryPrescriptionPresenter;
     private ProgressDialog dialog;
     private List patient = new ArrayList();
-    private MyAdapter myAdapter;
+    //    private MyAdapter myAdapter;
     private LoginInfo loginInfo;
     private String token;
     private List<String> mHistoryKeywords = new ArrayList<>();
     private List<String> mHistoryKeywordss = new ArrayList<>();
+    private FragmentTransaction transaction;
+    private PrescriptionFragment prescriptionFragment = PrescriptionFragment.newInstance();
+    private ContentFragment contentFragment = ContentFragment.newInstance();
+    private String UserId;
+    private int Fragmentnumber = 2;
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,11 +119,37 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
         setContentView(R.layout.paint_activity);
         ButterKnife.bind(this);
         getData();
-        queryPrescriptionPresenter = new QueryPrescriptionPresenter(PaintActivity.this);
+//        queryPrescriptionPresenter = new QueryPrescriptionPresenter(PaintActivity.this);
         initData();
         mPref = getSharedPreferences("test", Activity.MODE_PRIVATE);
         mEditor = mPref.edit();
         initSearchHistory();
+    }
+
+    private void initView() {//
+        Bundle bundle = new Bundle();
+        bundle.putString("id", UserId);
+        transaction = getSupportFragmentManager().beginTransaction();
+        if (Fragmentnumber == 1) {
+            prescriptionFragment.setArguments(bundle);
+            transaction.add(R.id.fragment_container,
+                    prescriptionFragment);
+            contentFragment.setArguments(bundle);
+            transaction.add(R.id.fragment_container,
+                    contentFragment);
+            transaction.hide(contentFragment);
+        } else {
+            prescriptionFragment.setArguments(bundle);
+            transaction.add(R.id.fragment_container,
+                    prescriptionFragment);
+            contentFragment.setArguments(bundle);
+            transaction.add(R.id.fragment_container,
+                    contentFragment);
+            transaction.hide(prescriptionFragment);
+        }
+        // Commit the transaction
+        transaction.commit();
+
     }
 
     @Override
@@ -118,14 +164,14 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
 //                }
                 if (patient.size() != 0) {
                     patient.clear();
-                    myAdapter.notifyDataSetChanged();
+//                    myAdapter.notifyDataSetChanged();
                     xinjingName.setText("xxx");
                     xinjingPhone.setText("xxxxxxxxxxx");
                 }
                 String phone = tabBarKeywordEt.getText().toString().trim();
 
                 if (phone.equals("")) {
-                    ToastCommom.createInstance().ToastShow(PaintActivity.this, "手机号不能为空");
+                    ToastCommom.createInstance().ToastShow(PaintActivity.this, "查询字不能为空");
                     break;
                 }
                 Map<String, String> priArgs = new HashMap<>();
@@ -137,12 +183,8 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
 
                 } else {
                     Log.e("--------查询患者", phone);
-                    if (isMobile(phone)) {
-                        queryPatientPresenter = new QueryPatientPresenter(PaintActivity.this, priArgs);
-                        queryPatientPresenter.getPatient();
-                    } else {
-                        ToastCommom.createInstance().ToastShow(PaintActivity.this, "请输入正确的手机号格式");
-                    }
+                    queryPatientPresenter = new QueryPatientPresenter(PaintActivity.this, priArgs);
+                    queryPatientPresenter.getPatientNoPhone();
                 }
 
                 break;
@@ -160,36 +202,68 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
     //查询患者
     @Override
     public void updateView(PatientInfo user) {
+        UserId = user.getData().getUserId();
+        Log.e("----chaxun", UserId);
+        initView();
         searchHistoryLl.setVisibility(View.GONE);
         actionThree.setVisibility(View.VISIBLE);
-        listview.setVisibility(View.VISIBLE);
+        selectorContent.setVisibility(View.VISIBLE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+//        listview.setVisibility(View.VISIBLE);
         if (tabBarKeywordEt.getText().length() > 0) {
             save();
         }
         tabBarKeywordEt.setText("");
         xinjingName.setText(user.getData().getRealname());
         xinjingPhone.setText(user.getData().getMobile());
-        getPrescription(user.getData().getUserId());
+//        getPrescription(UserId);
     }
 
-    //查询患者处方列表
+    /**
+     * 统一的mvp接口回调
+     *
+     * @param user
+     */
+    //病案号查询患者
     @Override
-    public void updateView(Prescription user) {
-        if (user.getData() != null) {
-            for (int i = 0; i < user.getData().size(); i++) {
-                patient.add(user.getData().get(i));
-            }
-            myAdapter.notifyDataSetChanged();
-        } else {
-            ToastCommom.createInstance().ToastShow(PaintActivity.this, "没有数据");
+    public void updateView(PatientNophoneInfo user) {
+        UserId = user.getData().getUserId();
+        Log.e("----chaxun", UserId);
+        initView();
+        searchHistoryLl.setVisibility(View.GONE);
+        actionThree.setVisibility(View.VISIBLE);
+        selectorContent.setVisibility(View.VISIBLE);
+        fragmentContainer.setVisibility(View.VISIBLE);
+//        listview.setVisibility(View.VISIBLE);
+        Editable text = tabBarKeywordEt.getText();
+        if (tabBarKeywordEt.getText().length() > 0) {
+            save();
         }
+        tabBarKeywordEt.setText("");
+        xinjingName.setText(user.getData().getRealname());
+        xinjingPhone.setText(user.getData().getRecordno() + "");
 
+//        getPrescription(UserId);
     }
 
-    @Override
-    public void update(PrescriptionContent p) {
-
-    }
+//    //查询患者处方列表
+//    @Override
+//    public void updateView(Prescription user) {
+//        if (user.getData() != null) {
+//            for (int i = 0; i < user.getData().size(); i++) {
+//                patient.add(user.getData().get(i));
+//            }
+////            myAdapter.notifyDataSetChanged();
+//        } else {
+//            ToastCommom.createInstance().ToastShow(PaintActivity.this, "没有数据");
+//        }
+//
+//    }
+//
+//    @Override
+//    public void update(PrescriptionContent p) {
+//
+//    }
 
     @Override
     public void showProgressDialog() {
@@ -257,7 +331,8 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
 
         lp.Login();
     }
-    public void getSp(){
+
+    public void getSp() {
         String history = mPref.getString(KEY_SEARCH_HISTORY_KEYWORD, "");
         if (!TextUtils.isEmpty(history)) {
             List<String> list = new ArrayList<String>();
@@ -267,6 +342,7 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
             mHistoryKeywords = list;
         }
     }
+
     public void initSearchHistory() {
         ListView listViewx = (ListView) findViewById(R.id.search_history_lv);
         findViewById(R.id.clear_history_btn).setOnClickListener(this);
@@ -283,7 +359,7 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
         } else {
             searchHistoryLl.setVisibility(View.GONE);
         }
-        mArrAdapter = new MyArrayAdapter(this,mHistoryKeywords);
+        mArrAdapter = new MyArrayAdapter(this, mHistoryKeywords);
         listViewx.setAdapter(mArrAdapter);
         listViewx.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -311,7 +387,7 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
         }
         mHistoryKeywords.clear();
         getSp();
-        Log.e("--------baocunhou",mHistoryKeywords.size()+"");
+        Log.e("--------baocunhou", mHistoryKeywords.size() + "");
         mArrAdapter.notifyDataSetChanged();
     }
 
@@ -336,6 +412,39 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
 
     private void initData() {
         imgBack.setOnClickListener(this);
+        selectorContent.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.btn1:
+                        Fragmentnumber = 1;
+                        select(1);
+//                       Bundle bundle = new Bundle();
+//                       bundle.putString("id",UserId);
+//                       prescriptionFragment.setArguments(bundle);
+//                       transaction = getSupportFragmentManager().beginTransaction();
+//                       transaction.replace(R.id.fragment_container,
+//                               prescriptionFragment);
+//                       // Commit the transaction
+//                       transaction.commit();
+//                       RxBus.getDefault().post(ToPrescription.class);
+                        break;
+                    case R.id.btn2:
+                        Fragmentnumber = 2;
+                        select(2);
+//                       Bundle bundle2 = new Bundle();
+//                       bundle2.putString("id",UserId);
+//                       contentFragment.setArguments(bundle2);
+//                       transaction = getSupportFragmentManager().beginTransaction();
+//                       transaction.replace(R.id.fragment_container,
+//                               contentFragment);
+//                       // Commit the transaction
+//                       transaction.commit();
+//                       RxBus.getDefault().post(ToContent.class);
+                        break;
+                }
+            }
+        });
         clearKeywordIv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -349,8 +458,25 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
             public void onClick(View v) {
                 searchHistoryLl.setVisibility(View.VISIBLE);
                 actionThree.setVisibility(View.GONE);
-                listview.setVisibility(View.GONE);
+//                listview.setVisibility(View.GONE);
+                selectorContent.setVisibility(View.GONE);
+                fragmentContainer.setVisibility(View.GONE);
                 mArrAdapter.setList(mHistoryKeywords);
+                transaction = getSupportFragmentManager().beginTransaction();
+//                if (Fragmentnumber == 1){
+                if (prescriptionFragment != null) {
+                    transaction.remove(prescriptionFragment);
+//                        transaction.commit();
+                }
+//                    }
+//                }else{
+                if (contentFragment != null) {
+                    transaction.remove(contentFragment);
+//                        transaction.commit();
+                }
+                transaction.commit();
+//                }
+
             }
         });
         tabBarKeywordEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -373,7 +499,7 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
                 if (s.length() == 0) {
-                    Log.e("-------s=0", "zengjia"+s);
+                    Log.e("-------s=0", "zengjia" + s);
                     tabBarCancelTv.setText("查询");
                     clearKeywordIv.setVisibility(View.GONE);
                     if (mHistoryKeywords.size() > 0) {
@@ -387,22 +513,24 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
                 } else {
                     searchHistoryLl.setVisibility(View.VISIBLE);
                     actionThree.setVisibility(View.GONE);
-                    listview.setVisibility(View.GONE);
-                    if (mHistoryKeywordss.size()!= 0){
+//                    listview.setVisibility(View.GONE);
+                    selectorContent.setVisibility(View.GONE);
+                    fragmentContainer.setVisibility(View.GONE);
+                    if (mHistoryKeywordss.size() != 0) {
                         mHistoryKeywordss.clear();
                     }
-                    if (mHistoryKeywords.size()!= 0){
+                    if (mHistoryKeywords.size() != 0) {
                         String st = tabBarKeywordEt.getText().toString();
-                        for (int i = 0; i <mHistoryKeywords.size() ; i++) {
-                            if (mHistoryKeywords.get(i).startsWith(st)){
-                                Log.e("-------",mHistoryKeywords.get(i));
+                        for (int i = 0; i < mHistoryKeywords.size(); i++) {
+                            if (mHistoryKeywords.get(i).startsWith(st)) {
+                                Log.e("-------", mHistoryKeywords.get(i));
                                 mHistoryKeywordss.add(mHistoryKeywords.get(i));
                             }
                         }
                         mHistoryKeywords.clear();
                     }
-                        mHistoryKeywords.addAll(mHistoryKeywordss);
-                    Log.e("-------+",mHistoryKeywords.size()+"");
+                    mHistoryKeywords.addAll(mHistoryKeywordss);
+                    Log.e("-------+", mHistoryKeywords.size() + "");
                     mArrAdapter.setList(mHistoryKeywords);
                     getSp();
                 }
@@ -417,39 +545,39 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
         tabBarCancelTv.setText("查询");
         tabBarCancelTv.setOnClickListener(this);
 
-        myAdapter = new MyAdapter(PaintActivity.this, patient, R.layout.layout_chufang);
-        listview.setAdapter(myAdapter);
-
-        listview.setDividerHeight(25);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Prescription.DataBean cf = (Prescription.DataBean) patient.get(position);
-                int i = checkNetWork();
-                if (i == 0) {
-                    ToastCommom.createInstance().ToastShow(PaintActivity.this, "请设置网络环境");
-                } else {
-                    Intent ss = new Intent(PaintActivity.this, PrescriptionContentActivity.class);
-                    ss.putExtra("id", cf.getId());
-                    startActivity(ss);
-
-                }
-            }
-        });
+//        myAdapter = new MyAdapter(PaintActivity.this, patient, R.layout.layout_chufang);
+//        listview.setAdapter(myAdapter);
+//
+//        listview.setDividerHeight(25);
+//        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Prescription.DataBean cf = (Prescription.DataBean) patient.get(position);
+//                int i = checkNetWork();
+//                if (i == 0) {
+//                    ToastCommom.createInstance().ToastShow(PaintActivity.this, "请设置网络环境");
+//                } else {
+//                    Intent ss = new Intent(PaintActivity.this, PrescriptionContentActivity.class);
+//                    ss.putExtra("id", cf.getId());
+//                    startActivity(ss);
+//
+//                }
+//            }
+//        });
 
         clearHistoryBtn.setOnClickListener(this);
     }
 
     PrescriptionContent.DataBean datatimes;
 
-    public void getPrescription(String patientId) {
-        Map<String, String> priArgs = new HashMap<>();
-        priArgs.put("patientId", patientId);
-        priArgs.put("token", token);
-
-        queryPrescriptionPresenter.setMap(priArgs);
-        queryPrescriptionPresenter.getPrescription();
-    }
+//    public void getPrescription(String patientId) {
+//        Map<String, String> priArgs = new HashMap<>();
+//        priArgs.put("patientId", patientId);
+//        priArgs.put("token", token);
+//
+//        queryPrescriptionPresenter.setMap(priArgs);
+//        queryPrescriptionPresenter.getPrescription();
+//    }
 
     public static boolean isMobile(String number) {
     /*
@@ -468,6 +596,7 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
     }
 
     public void getData() {
+
         SpUtils instance = SpUtils.getInstance();
         instance.init(PaintActivity.this);
         users = instance.getUser();
@@ -483,4 +612,47 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
         instance.saveLogin(infos);
     }
 
+    private void select(int i) {
+        transaction = getSupportFragmentManager().beginTransaction();
+        hideFragment(transaction);
+        switch (i) {
+            case 1:
+                if (prescriptionFragment == null) {
+                    prescriptionFragment = PrescriptionFragment.newInstance();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", UserId);
+                    prescriptionFragment.setArguments(bundle);
+                    transaction.add(R.id.fragment_container, prescriptionFragment);
+                } else {
+                    transaction.show(prescriptionFragment);
+                }
+                break;
+            case 2:
+                if (contentFragment == null) {
+                    contentFragment = ContentFragment.newInstance();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("id", UserId);
+                    contentFragment.setArguments(bundle);
+                    transaction.add(R.id.fragment_container, contentFragment);
+                } else {
+                    transaction.show(contentFragment);
+                }
+                break;
+        }
+        transaction.commit();
+    }
+
+    /*
+   * 隐藏所有的Fragment
+   */
+    private void hideFragment(FragmentTransaction trs) {
+
+        if (prescriptionFragment != null) {
+            trs.hide(prescriptionFragment);
+        }
+        if (contentFragment != null) {
+            trs.hide(contentFragment);
+        }
+    }
 }
+

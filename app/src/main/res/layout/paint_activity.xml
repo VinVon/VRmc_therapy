@@ -4,8 +4,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f0f0f0"
-    tools:context="vr.promulgator.com.vrmc.MainActivity">
+    android:background="#f0f0f0">
     <RelativeLayout
         android:id="@+id/global_search_action_bar_rl"
         android:layout_width="match_parent"
@@ -68,96 +67,174 @@
         android:layout_below="@id/global_search_action_bar_rl"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-        <TextView
-            android:id="@+id/contentTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:text="历史搜索"
-            android:paddingTop="4dp"
-            android:paddingBottom="4dp"
-            android:paddingLeft="10dp"
-            android:textColor="#cccccc"/>
-        <ListView
-            android:id="@+id/search_history_lv"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:dividerHeight="0.5dp"
-            style="@style/common_list"
-            android:divider="@color/default_line_color"
-            android:listSelector="@drawable/list_item_selector">
-        </ListView>
-        <Button
-            android:id="@+id/clear_history_btn"
-            android:layout_width="210dp"
-            android:layout_height="38dp"
-            android:layout_marginTop="5dp"
-            android:layout_gravity="center"
-            android:textSize="14sp"
-            android:text="清除历史搜索记录"
-            android:background="@drawable/round_btn_selector"/>
-    </LinearLayout>
+            >
+            <TextView
+                android:id="@+id/contentTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="历史搜索"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:paddingLeft="10dp"
+                android:textColor="#cccccc"/>
+            <ListView
+                android:id="@+id/search_history_lv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:dividerHeight="0.5dp"
+                style="@style/common_list"
+                android:divider="@color/default_line_color"
+                android:listSelector="@drawable/list_item_selector">
+            </ListView>
+            <Button
+                android:id="@+id/clear_history_btn"
+                android:layout_width="210dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center"
+                android:textSize="14sp"
+                android:text="清除历史搜索记录"
+                android:background="@drawable/round_btn_selector"/>
+        </LinearLayout>
     </FrameLayout>
-    <LinearLayout
-        android:visibility="gone"
-       android:weightSum="70"
+    <RelativeLayout
+android:visibility="gone"
         android:id="@+id/action_three"
         android:layout_below="@+id/global_search_action_bar_rl"
         android:background="#ffffff"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="40dp">
-        <TextView
-            android:layout_marginLeft="10dp"
+        android:orientation="vertical"
+        android:layout_height="80dp">
+        <LinearLayout
+            android:id="@+id/ll_1"
+            android:layout_weight="1"
             android:gravity="center_vertical"
-            android:layout_weight="10"
-            android:layout_width="0dp"
-            android:textColor="@color/black"
-            android:layout_height="match_parent"
-            android:text="姓名 :"/>
-        <TextView
-            android:id="@+id/xinjing_name"
-            android:layout_marginLeft="5dp"
-            android:gravity="center_vertical"
-            android:layout_weight="10"
-            android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="xxx"/>
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:gravity="center_vertical"
-            android:layout_weight="15"
-            android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="手机号  :"/>
-        <TextView
-            android:id="@+id/xinjing_phone"
-            android:layout_marginLeft="5dp"
-            android:gravity="center_vertical"
-            android:layout_weight="35"
-            android:textColor="@color/black"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:text="xxxxxxxxxxx"/>
-    </LinearLayout>
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:text="姓 名  :"/>
+            <TextView
 
+                android:id="@+id/xinjing_name"
+                android:paddingLeft="1dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="欧阳西大"/>
+            <TextView
 
-    <ListView
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="病案号  :"/>
+            <TextView
+
+                android:layout_marginLeft="1dp"
+                android:id="@+id/xinjing_phone"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="xxxxxxxxxxx"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_below="@+id/ll_1"
+            android:id="@+id/ll_2"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal">
+            <TextView
+
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:textColor="@color/black"
+                android:layout_height="wrap_content"
+                android:text="性 别  :"/>
+            <TextView
+
+                android:id="@+id/xinjing_sex"
+                android:paddingLeft="1dp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:text="男"/>
+            <TextView
+
+                android:layout_marginLeft="10dp"
+                android:gravity="center"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="病    症  :"/>
+            <TextView
+
+                android:layout_marginLeft="1dp"
+                android:id="@+id/xinjing_medical"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="xxxxxxxxx"/>
+        </LinearLayout>
+    </RelativeLayout>
+    <RadioGroup
+        android:checkedButton="@+id/btn2"
         android:visibility="gone"
-        android:layout_marginTop="10dp"
-        android:id="@+id/listview"
-        android:background="#ffffff"
+        android:gravity="center"
         android:layout_below="@+id/action_three"
+        android:id="@+id/selector_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
-
+        android:layout_height="60dp"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/btn1"
+            android:button="@null"
+            android:background="@drawable/bg_radiobutton"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:textColor="@color/radiobutton_textcolor"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="处方"/>
+        <RadioButton
+            android:id="@+id/btn2"
+            android:button="@null"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/bg_radiobutton"
+            android:textColor="@color/radiobutton_textcolor"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="内容"/>
+    </RadioGroup>
+    <FrameLayout
+        android:visibility="gone"
+        android:layout_below="@+id/selector_content"
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
 

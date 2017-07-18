@@ -1,18 +1,17 @@
 package vr.promulgator.com.vrmc.bean;
 
-import java.io.Serializable;
-
 /**
- * Created by raytine on 2017/2/9.
+ * 病案号返回的患者
+ * Created by raytine on 2017/7/4.
  */
 
-public class PatientInfo implements Serializable{
+public class PatientNophoneInfo {
 
     /**
      * success : true
      * code : 0
      * message : 根据条件查询患者信息成功
-     * data : {"token":null,"userId":"8a2b4be85c0fc553015c0feb17c50010","realname":"15101693304","email":null,"mobile":"15101693304","medicareType":null,"medicareCardNumber":null,"idNumber":null,"age":null,"address":null,"emergencyContact":null,"emergencyContactPhone":null,"gender":null}
+     * data : {"token":null,"userId":"8a2b4be85cbe5f7b015cbea32d2d001e","realname":"测试患者001","email":null,"mobile":"15657153212","recordno":"blh001","medicareType":0,"medicareCardNumber":"yb001","idNumber":"33068219931228801","age":0,"address":"杭州市","emergencyContact":null,"emergencyContactPhone":"15657153212","gender":1}
      */
 
     private boolean success;
@@ -52,21 +51,22 @@ public class PatientInfo implements Serializable{
         this.data = data;
     }
 
-    public static class DataBean implements Serializable{
+    public static class DataBean {
         /**
          * token : null
-         * userId : 8a2b4be85c0fc553015c0feb17c50010
-         * realname : 15101693304
+         * userId : 8a2b4be85cbe5f7b015cbea32d2d001e
+         * realname : 测试患者001
          * email : null
-         * mobile : 15101693304
-         * medicareType : null
-         * medicareCardNumber : null
-         * idNumber : null
-         * age : null
-         * address : null
+         * mobile : 15657153212
+         * recordno : blh001
+         * medicareType : 0
+         * medicareCardNumber : yb001
+         * idNumber : 33068219931228801
+         * age : 0
+         * address : 杭州市
          * emergencyContact : null
-         * emergencyContactPhone : null
-         * gender : null
+         * emergencyContactPhone : 15657153212
+         * gender : 1
          */
 
         private Object token;
@@ -74,14 +74,15 @@ public class PatientInfo implements Serializable{
         private String realname;
         private Object email;
         private String mobile;
-        private Object medicareType;
-        private Object medicareCardNumber;
-        private Object idNumber;
-        private Object age;
-        private Object address;
+        private String recordno;
+        private int medicareType;
+        private String medicareCardNumber;
+        private String idNumber;
+        private int age;
+        private String address;
         private Object emergencyContact;
-        private Object emergencyContactPhone;
-        private Object gender;
+        private String emergencyContactPhone;
+        private int gender;
 
         public Object getToken() {
             return token;
@@ -123,43 +124,51 @@ public class PatientInfo implements Serializable{
             this.mobile = mobile;
         }
 
-        public Object getMedicareType() {
+        public String getRecordno() {
+            return recordno;
+        }
+
+        public void setRecordno(String recordno) {
+            this.recordno = recordno;
+        }
+
+        public int getMedicareType() {
             return medicareType;
         }
 
-        public void setMedicareType(Object medicareType) {
+        public void setMedicareType(int medicareType) {
             this.medicareType = medicareType;
         }
 
-        public Object getMedicareCardNumber() {
+        public String getMedicareCardNumber() {
             return medicareCardNumber;
         }
 
-        public void setMedicareCardNumber(Object medicareCardNumber) {
+        public void setMedicareCardNumber(String medicareCardNumber) {
             this.medicareCardNumber = medicareCardNumber;
         }
 
-        public Object getIdNumber() {
+        public String getIdNumber() {
             return idNumber;
         }
 
-        public void setIdNumber(Object idNumber) {
+        public void setIdNumber(String idNumber) {
             this.idNumber = idNumber;
         }
 
-        public Object getAge() {
+        public int getAge() {
             return age;
         }
 
-        public void setAge(Object age) {
+        public void setAge(int age) {
             this.age = age;
         }
 
-        public Object getAddress() {
+        public String getAddress() {
             return address;
         }
 
-        public void setAddress(Object address) {
+        public void setAddress(String address) {
             this.address = address;
         }
 
@@ -171,19 +180,19 @@ public class PatientInfo implements Serializable{
             this.emergencyContact = emergencyContact;
         }
 
-        public Object getEmergencyContactPhone() {
+        public String getEmergencyContactPhone() {
             return emergencyContactPhone;
         }
 
-        public void setEmergencyContactPhone(Object emergencyContactPhone) {
+        public void setEmergencyContactPhone(String emergencyContactPhone) {
             this.emergencyContactPhone = emergencyContactPhone;
         }
 
-        public Object getGender() {
+        public int getGender() {
             return gender;
         }
 
-        public void setGender(Object gender) {
+        public void setGender(int gender) {
             this.gender = gender;
         }
     }

@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.bigkoo.pickerview.OptionsPickerView;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import vr.promulgator.com.vrmc.bean.NophonePrescriptionContent;
 import vr.promulgator.com.vrmc.bean.UserList;
 import vr.promulgator.com.vrmc.utils.ToastCommom;
 
@@ -100,7 +101,7 @@ public class PrescriptionContentActivity extends BaseActivity implements QueryPr
 
     //查询内容列表方法
     public void getPrescriptionContent(String id) {
-        Map<String, String> priArgs = new HashMap<>();
+        Map<String, Object> priArgs = new HashMap<>();
         priArgs.put("prescriptionId", id);
         priArgs.put("token", token);
         Log.e("0000000",token+"  "+id);
@@ -124,6 +125,11 @@ public class PrescriptionContentActivity extends BaseActivity implements QueryPr
         } else {
             ToastCommom.createInstance().ToastShow(PrescriptionContentActivity.this, "没有数据");
         }
+    }
+
+    @Override
+    public void update(NophonePrescriptionContent p, int status) {
+
     }
 
     @Override

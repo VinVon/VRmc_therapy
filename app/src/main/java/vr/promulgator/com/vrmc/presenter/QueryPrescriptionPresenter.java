@@ -1,7 +1,9 @@
 package vr.promulgator.com.vrmc.presenter;
 
 import android.os.Handler;
+import android.util.Log;
 
+import vr.promulgator.com.vrmc.bean.NophonePrescriptionContent;
 import vr.promulgator.com.vrmc.imp.QueryPrescription;
 import vr.promulgator.com.vrmc.model.QueryPrescriptionModel;
 
@@ -18,14 +20,14 @@ public class QueryPrescriptionPresenter {
     private Handler handler = new Handler();
     private QueryPrescription queryPrescription;
     private QueryPrescriptionModel queryPrescriptionModel;
-    private Map<String,String> map;
+    private Map<String,Object> map;
 
     public QueryPrescriptionPresenter(QueryPrescription queryPrescription) {
         this.queryPrescription = queryPrescription;
         queryPrescriptionModel = new QueryPrescriptionModel();
     }
 
-    public void setMap(Map<String, String> map) {
+    public void setMap(Map<String, Object> map) {
         this.map = map;
     }
     //获取处方
@@ -93,6 +95,46 @@ public class QueryPrescriptionPresenter {
 
             @Override
             public void loginFailed(final PrescriptionContent user) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (user == null){
+                            queryPrescription.showError(null);
+                        }else{
+                            queryPrescription.showError(user.getMessage());
+                        }
+                    }
+                });
+            }
+        });
+    }
+    //获取内容列表(病案号)status1正常请求数据,2加载更多数据 3.刷新数据
+    public void  getPrescriptionContentNophonelist(int status){
+        queryPrescriptionModel.getPrescriptionlistnophone(map, new QueryPrescriptionModel.OnLoginListeneros() {
+            @Override
+            public void loginSuccess(final NophonePrescriptionContent user) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.e("----bahpre",user.getData().size()+"个");
+                        queryPrescription.update(user,status);
+                    }
+                });
+            }
+
+            @Override
+            public void tokenChange() {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        queryPrescription.tokenchange();
+
+                    }
+                });
+            }
+
+            @Override
+            public void loginFailed(final NophonePrescriptionContent user) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {

@@ -81,11 +81,11 @@ public class JsonUtils {
             pBean.setMedicareType(obj.getString("medicareType"));
             pBean.setMedicareCardNumber(obj.getString("medicareCardNumber"));
             pBean.setIdNumber(obj.getString("idNumber"));
-            pBean.setAge(obj.getInt("age"));
+            pBean.setAge(obj.get("age"));
             pBean.setAddress(obj.getString("address"));
             pBean.setEmergencyContact(obj.getString("emergencyContact"));
             pBean.setEmergencyContactPhone(obj.getString("emergencyContactPhone"));
-            pBean.setGender(obj.getInt("gender"));
+            pBean.setGender(obj.get("gender"));
             patientInfo.setData(pBean);
         } catch (JSONException e) {
             e.printStackTrace();
