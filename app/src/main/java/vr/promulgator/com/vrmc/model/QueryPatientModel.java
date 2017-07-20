@@ -80,7 +80,7 @@ public class QueryPatientModel {
 
                     @Override
                     public void onError(Call call, Exception e, int id) {
-
+                        onLoginListener.loginFailed(null);
                     }
 
                     @Override

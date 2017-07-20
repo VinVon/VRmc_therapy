@@ -100,9 +100,15 @@ public class QueryPatientPresenter {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        queryPayient.showError(user.getMessage());
-                        queryPayient.change();
-                        queryPayient.hideProgressDialog();
+                        if (user == null){
+                            queryPayient.showError("网络异常,请重新操作");
+                            queryPayient.change();
+                            queryPayient.hideProgressDialog();
+                        }else{
+                            queryPayient.showError(user.getMessage());
+                            queryPayient.change();
+                            queryPayient.hideProgressDialog();
+                        }
                     }
                 });
 

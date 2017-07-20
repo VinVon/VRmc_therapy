@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import vr.promulgator.com.vrmc.bean.LocalInfo;
 import vr.promulgator.com.vrmc.imp.ChangePassimp;
 import vr.promulgator.com.vrmc.utils.ToastCommom;
 
@@ -100,6 +101,9 @@ public class ModifyPassActivity extends BaseActivity implements ChangePassimp {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismiss();
+                        LocalInfo user = SpUtils.getInstance().getUser();
+                        user.setFirstLogin(true);
+                        SpUtils.getInstance().saveUser(user);
                         startActivity(new Intent(ModifyPassActivity.this, AuthorizationActivity.class));
                     }
                 })
