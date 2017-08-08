@@ -1,8 +1,10 @@
 package vr.promulgator.com.vrmc.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,6 +76,10 @@ public class ModifyPassActivity extends BaseActivity implements ChangePassimp {
                     ToastCommom.createInstance().ToastShow(ModifyPassActivity.this, "新密码不能为空");
                     return;
                 }
+                if (text2.length()<6||text2.length()>16) {
+                    ToastCommom.createInstance().ToastShow(ModifyPassActivity.this, "新密码不符合规范");
+                    return;
+                }
                 if (text3.isEmpty()) {
                     ToastCommom.createInstance().ToastShow(ModifyPassActivity.this, "请输入密码确认");
                     return;
@@ -94,10 +100,17 @@ public class ModifyPassActivity extends BaseActivity implements ChangePassimp {
 
     @Override
     public void changeSuccess(String st) {
-        new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE)
-                .setTitleText(st)
-                .setConfirmText("确定")
-                .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+        SweetAlertDialog sweetAlertDialog = new SweetAlertDialog(this, SweetAlertDialog.WARNING_TYPE);
+        sweetAlertDialog.setCanceledOnTouchOutside(false);
+        sweetAlertDialog.setTitleText("密码修改成功");
+        sweetAlertDialog.setConfirmText("确定");
+        sweetAlertDialog.setOnKeyListener(new DialogInterface.OnKeyListener() {
+            @Override
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+                return true;
+            }
+        });
+        sweetAlertDialog.setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
                     @Override
                     public void onClick(SweetAlertDialog sweetAlertDialog) {
                         sweetAlertDialog.dismiss();
@@ -105,6 +118,7 @@ public class ModifyPassActivity extends BaseActivity implements ChangePassimp {
                         user.setFirstLogin(true);
                         SpUtils.getInstance().saveUser(user);
                         startActivity(new Intent(ModifyPassActivity.this, AuthorizationActivity.class));
+
                     }
                 })
                 .show();

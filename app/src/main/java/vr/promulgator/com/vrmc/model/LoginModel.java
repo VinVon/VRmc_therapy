@@ -47,7 +47,7 @@ public class LoginModel {
 
                                 @Override
                                 public void onError(Call call, Exception e, int id) {
-
+                                    listenter.loginFailed(null);
                                 }
 
                                 @Override

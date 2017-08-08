@@ -43,7 +43,7 @@ public class UpdateVersionService extends Service {
         super.onCreate();
 
         httpUtils = new HttpUtils();
-        updateFile = new File(SDCardUtils.getRootDirectory()+"/updateVersion/gdmsaec-app.apk");
+
 
         nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         notification = new Notification();
@@ -61,6 +61,8 @@ public class UpdateVersionService extends Service {
 //		String url = versionInfo.getDownloadUrl();
         Bundle bundle = intent.getExtras();
         String url = bundle.getString("downloadUrl");
+        String versionName = bundle.getString("downloadVersion");
+        updateFile = new File(SDCardUtils.getRootDirectory()+"/updateVersion/promulgator_"+versionName+".apk");
         PreferenceUtils.setString(UpdateVersionService.this, "apkDownloadurl", url);
         nm.notify(titleId, notification);
         downLoadFile(url);
@@ -100,7 +102,7 @@ public class UpdateVersionService extends Service {
                 }else if(error.getExceptionCode() == 416){//文件已经下载完毕
 
                     // 更改文字
-                    notification.contentView.setTextViewText(R.id.msg, "VR室");
+                    notification.contentView.setTextViewText(R.id.msg, "VR室治疗师版");
                     // 更改文字
                     notification.contentView.setTextViewText(R.id.bartext, "检测到新版本已经下载完成，点击即安装!");
                     // 隐藏进度条
@@ -126,7 +128,7 @@ public class UpdateVersionService extends Service {
                 }
 
                 long l = current*100/total;
-                notification.contentView.setTextViewText(R.id.msg, "正在下载：VR室");
+                notification.contentView.setTextViewText(R.id.msg, "正在下载：VR室治疗师版");
                 // 更改文字
                 notification.contentView.setTextViewText(R.id.bartext, l+ "%");
                 // 更改进度条
@@ -143,7 +145,7 @@ public class UpdateVersionService extends Service {
 
             @Override
             public void onStart() {
-                notification.contentView.setTextViewText(R.id.msg, "开始下载：VR室");
+                notification.contentView.setTextViewText(R.id.msg, "开始下载：VR室治疗师版");
                 nm.notify(titleId, notification);
             }
 

@@ -2,6 +2,7 @@ package vr.promulgator.com.vrmc.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -162,35 +164,39 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
 // else {
 //                    finish();
 //                }
-                if (patient.size() != 0) {
-                    patient.clear();
-//                    myAdapter.notifyDataSetChanged();
-                    xinjingName.setText("xxx");
-                    xinjingPhone.setText("xxxxxxxxxxx");
-                }
-                String phone = tabBarKeywordEt.getText().toString().trim();
-
-                if (phone.equals("")) {
-                    ToastCommom.createInstance().ToastShow(PaintActivity.this, "查询字不能为空");
-                    break;
-                }
-                Map<String, String> priArgs = new HashMap<>();
-                priArgs.put("keyword", phone);
-                priArgs.put("token", token);
-                int i = checkNetWork();
-                if (i == 0) {
-                    ToastCommom.createInstance().ToastShow(PaintActivity.this, "请设置网络环境");
-
-                } else {
-                    Log.e("--------查询患者", phone);
-                    queryPatientPresenter = new QueryPatientPresenter(PaintActivity.this, priArgs);
-                    queryPatientPresenter.getPatientNoPhone();
-                }
+                reqPatient();
 
                 break;
             case R.id.clear_history_btn:
                 cleanHistory();
                 break;
+        }
+    }
+
+    private void reqPatient() {
+        if (patient.size() != 0) {
+            patient.clear();
+//                    myAdapter.notifyDataSetChanged();
+            xinjingName.setText("xxx");
+            xinjingPhone.setText("xxxxxxxxxxx");
+        }
+        String phone = tabBarKeywordEt.getText().toString().trim();
+
+        if (phone.equals("")) {
+            ToastCommom.createInstance().ToastShow(PaintActivity.this, "查询字不能为空");
+            return;
+        }
+        Map<String, String> priArgs = new HashMap<>();
+        priArgs.put("keyword", phone);
+        priArgs.put("token", token);
+        int i = checkNetWork();
+        if (i == 0) {
+            ToastCommom.createInstance().ToastShow(PaintActivity.this, "请设置网络环境");
+
+        } else {
+            Log.e("--------查询患者", phone);
+            queryPatientPresenter = new QueryPatientPresenter(PaintActivity.this, priArgs);
+            queryPatientPresenter.getPatientNoPhone();
         }
     }
 
@@ -227,6 +233,7 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
     //病案号查询患者
     @Override
     public void updateView(PatientNophoneInfo user) {
+        KeyBoardCancle();
         UserId = user.getData().getUserId();
         Log.e("----chaxun", UserId);
         initView();
@@ -245,7 +252,13 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
 
 //        getPrescription(UserId);
     }
-
+    public void KeyBoardCancle() {
+        View view = getWindow().peekDecorView();
+        if (view != null) {
+            InputMethodManager inputmanger = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            inputmanger.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
 //    //查询患者处方列表
 //    @Override
 //    public void updateView(Prescription user) {
@@ -483,7 +496,7 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-
+                    reqPatient();
                     return true;
                 }
                 return false;
@@ -511,6 +524,7 @@ public class PaintActivity extends BaseActivity implements View.OnClickListener,
                     }
                     mArrAdapter.notifyDataSetChanged();
                 } else {
+                    clearKeywordIv.setVisibility(View.VISIBLE);
                     searchHistoryLl.setVisibility(View.VISIBLE);
                     actionThree.setVisibility(View.GONE);
 //                    listview.setVisibility(View.GONE);

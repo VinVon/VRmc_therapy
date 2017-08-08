@@ -79,7 +79,7 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="请输入新密码"/>
+            android:hint="请输入新密码(6到16位之间)"/>
     </LinearLayout>
     <LinearLayout
         android:layout_marginRight="10dp"

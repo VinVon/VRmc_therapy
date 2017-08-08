@@ -155,7 +155,7 @@ public class UpdateVersionUtil {
      */
     public static void showDialog(final Context context,final VersionInfo versionInfo){
         final Dialog dialog = new AlertDialog.Builder(context).create();
-        final File file = new File(SDCardUtils.getRootDirectory()+"/updateVersion/gdmsaec-app.apk");
+        final File file = new File(SDCardUtils.getRootDirectory()+"/updateVersion/promulgator_"+versionInfo.getData().getVersionName()+".apk");
         dialog.setCancelable(false);// 可以用“返回键”取消
         dialog.setCanceledOnTouchOutside(false);//
         dialog.show();
@@ -171,7 +171,7 @@ public class UpdateVersionUtil {
         tvContent.setText(versionInfo.getData().getVersionDesc());
         tvUpdateTile.setText("最新版本："+versionInfo.getData().getVersionName());
 
-        if(file.exists() && file.getName().equals("gdmsaec-app.apk")){
+        if(file.exists() && file.getName().equals("promulgator_"+versionInfo.getData().getVersionName()+".apk")){
             tvUpdateMsgSize.setText("新版本已经下载，是否安装？");
         }else{
             tvUpdateMsgSize.setText("新版本大小："+versionInfo.getData().getVersionSize());
@@ -183,13 +183,14 @@ public class UpdateVersionUtil {
                 dialog.dismiss();
                 if(v.getId() == R.id.btn_update_id_ok){
                     //新版本已经下载
-                    if(file.exists() && file.getName().equals("gdmsaec-app.apk")){
+                    if(file.exists() && file.getName().equals("promulgator_"+versionInfo.getData().getVersionName()+".apk")){
                         Intent intent = ApkUtils.getInstallIntent(file);
                         context.startActivity(intent);
                     }else{
                         //没有下载，则开启服务下载新版本
                         Intent intent = new Intent(context,UpdateVersionService.class);
                         intent.putExtra("downloadUrl", versionInfo.getData().getDownloadUrl());
+                        intent.putExtra("downloadVersion", versionInfo.getData().getVersionName());
                         context.startService(intent);
                     }
                 }

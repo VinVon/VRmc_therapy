@@ -66,6 +66,7 @@ public class ContentFragment extends BaseFragment implements QueryPrescription, 
 
     public static ContentFragment newInstance() {
         if (fragment == null) {
+            Log.e("TAG","new一次");
             return new ContentFragment();
         }
         return fragment;
@@ -101,6 +102,7 @@ public class ContentFragment extends BaseFragment implements QueryPrescription, 
     private void initView() {
         mac = new MyadapterNo(getActivity(), patient_content, R.layout.layout_chufangcontent, this);
         listview.setAdapter(mac);
+
         swipefresh.setOnRefreshListener(this);
         swipefresh.setOnPullUpListener(this);
     }
@@ -129,21 +131,26 @@ public class ContentFragment extends BaseFragment implements QueryPrescription, 
     @Override
     public void update(NophonePrescriptionContent p,int status) {
         if (status ==1){ //刷新或者请求数据
+            Log.e("TAG","进来请求数据");
             if (patient_content.size() != 0) {
                 patient_content.clear();
             }
             if (p.getData() != null) {
                 for (int i = 0; i < p.getData().size(); i++) {
-                    patient_content.add(p.getData().get(i));
+                    if (p.getData().get(i).getContent_type()==1){
+                    patient_content.add(p.getData().get(i));}
                 }
+
                 mac.notifyDataSetChanged();
+                listview.setSelection(0);
             } else {
-                ToastCommom.createInstance().ToastShow(getActivity(), "没有数据");
+                ToastCommom.createInstance().ToastShow(getActivity(), "暂无内容没有数据");
             }
         }else if (status ==2){//加载更多数据
             if (p.getData() != null && p.getData().size() !=0) {
                 for (int i = 0; i < p.getData().size(); i++) {
-                    patient_content.add(p.getData().get(i));
+                    if (p.getData().get(i).getContent_type()==1){
+                    patient_content.add(p.getData().get(i));}
                 }
                 mac.notifyDataSetChanged();
                 swipefresh.postDelayed(new Runnable() {
@@ -173,13 +180,16 @@ public class ContentFragment extends BaseFragment implements QueryPrescription, 
             }
             if (p.getData() != null) {
                 for (int i = 0; i < p.getData().size(); i++) {
-                    patient_content.add(p.getData().get(i));
+                    if (p.getData().get(i).getContent_type()==1){
+                    patient_content.add(p.getData().get(i));}
                 }
+                if (swipefresh!= null){
                 swipefresh.setRefreshing(false);
+                }
                 mac.notifyDataSetChanged();
                 ToastCommom.createInstance().ToastShow(getActivity(), "数据更新成功....");
             } else {
-                ToastCommom.createInstance().ToastShow(getActivity(), "没有数据");
+                ToastCommom.createInstance().ToastShow(getActivity(), "暂无内容...");
             }
         }
     }
@@ -198,7 +208,7 @@ public class ContentFragment extends BaseFragment implements QueryPrescription, 
     public void showError(String msg) {
 
     }
-
+    private NophonePrescriptionContent.DataBean dataBean;
     @Override
     public void onsuccess(NophonePrescriptionContent.DataBean id) {
         //        datatimes = id;
@@ -206,7 +216,7 @@ public class ContentFragment extends BaseFragment implements QueryPrescription, 
 //        priArgs.put("contentId", datatimes.getContentId());
 //        priArgs.put("token", token);
         int i = checkNetWork();
-    ;
+        dataBean = id;
         if (i == 0) {
             ToastCommom.createInstance().ToastShow(getActivity(), "请设置网络环境");
         }else {
@@ -253,7 +263,7 @@ public class ContentFragment extends BaseFragment implements QueryPrescription, 
                 username = titles.get(options1);
                 new SweetAlertDialog(getActivity(), SweetAlertDialog.WARNING_TYPE)
                         .setTitleText("注意事项")
-                        .setContentText("请检查" + username + "VR眼镜是否在使用!" + "\n" + "确认播放声识别(反应速度训练)" + "\n" + "到" + username + "VR眼镜!")
+                        .setContentText("请检查" + username + "VR眼镜是否在使用!" + "\n" + dataBean.getContent_name() + "\n" + "到" + username + "VR眼镜!")
                         .setCancelText("否")
                         .setConfirmText("是")
                         .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
@@ -266,7 +276,6 @@ public class ContentFragment extends BaseFragment implements QueryPrescription, 
                                 adds.put("type", id.getContent_type());
                                 adds.put("userId", userid);
                                 adds.put("prescriptionContentId", id.getId());
-                                Log.e("-----", "type:" + id.getContent_type() + "userId:" + userid + "prescriptionContentId" + id.getId());
                                 addp.addTask(adds);
                             }
                         })

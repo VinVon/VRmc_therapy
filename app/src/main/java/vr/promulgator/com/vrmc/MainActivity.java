@@ -120,12 +120,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         File updateFile;
         if (Environment.MEDIA_MOUNTED.equals(Environment
                 .getExternalStorageState())) {
-            updateDir = new File(SDCardUtils.getRootDirectory() + "/updateVersion/gdmsaec-app.apk");
+            updateDir = new File(SDCardUtils.getRootDirectory() + "/updateVersion");
         } else {
             updateDir = context.getFilesDir();
         }
-        updateFile = new File(updateDir.getPath(), context.getResources()
-                .getString(R.string.app_name) + ".apk");
+        updateFile = new File(updateDir.getPath(), "promulgator_"+ApkUtils.getVersionName(this) +".apk");
         if (updateFile.exists()) {
             Log.e("---------------update", "升级包存在，删除升级包");
             updateFile.delete();
@@ -288,7 +287,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private void updateVersion() {
         Map<String, String> priArgsss = new HashMap<>();
-        priArgsss.put("systemVersion", ApkUtils.getVersionCode(this) + "");
+        priArgsss.put("systemVersion","2");
         SpUtils instance = SpUtils.getInstance();
         instance.init(MainActivity.this);
         token = instance.getUser().getToken();

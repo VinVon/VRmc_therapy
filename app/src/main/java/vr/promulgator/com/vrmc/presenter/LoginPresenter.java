@@ -48,6 +48,10 @@ public class LoginPresenter {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
+                        if (user == null){
+                            loginView.showError("网络异常...");
+
+                        }
                         loginView.showError(user.getMessage());
                         loginView.hideProgressDialog();
                     }

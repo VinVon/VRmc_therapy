@@ -116,7 +116,7 @@ public class PrescriptionFragment extends BaseFragment implements QueryPrescript
             }
             myAdapter.notifyDataSetChanged();
         } else {
-            ToastCommom.createInstance().ToastShow(getActivity(), "没有数据");
+            ToastCommom.createInstance().ToastShow(getActivity(), "暂无处方没有数据");
         }
     }
 
